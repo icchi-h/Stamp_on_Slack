@@ -33,7 +33,6 @@ function doPost(e) {
   var post_info = app.postMessage(channel_id, stamp_url, {
     username: e.parameter.user_name,
     icon_url: getUserIconURL(e.parameter.user_id)
-    as_user: true
   });
 
   return true;
