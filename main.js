@@ -28,6 +28,7 @@ function doPost(e) {
   
   // ユーザ名からtokenの取得
   var token = getValueFromSheet(user_name, 1);
+  var att = [{ "fallback": "スタンプを送信しました", "image_url": stamp_url }]
   
   // ユーザトークンの取得が成功した場合
   if (token != "") {
@@ -37,8 +38,9 @@ function doPost(e) {
     app.chatDelete(channel_id, e.parameter.timestamp);
   
     // 対応するスタンプURLを投稿
-    var post_info = app.postMessage(channel_id, stamp_url, {
-      as_user: true
+    var post_info = app.postMessage(channel_id, "", {
+      attachments : JSON.stringify(att),
+      as_user: true,
     });
   }
   else {
@@ -50,7 +52,8 @@ function doPost(e) {
     app.chatDelete(channel_id, e.parameter.timestamp);
   
     // 対応するスタンプURLを投稿
-    var post_info = app.postMessage(channel_id, stamp_url, {
+    var post_info = app.postMessage(channel_id, "", {
+      attachments : JSON.stringify(att),
       username: user_name,
       icon_url: icon_url,
     });
