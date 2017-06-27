@@ -27,11 +27,11 @@ function doPost(e) {
   var user_name = e.parameter.user_name;
   
   // ユーザ名からtokenの取得
-  var usr_token = getValueFromSheet(user_name, 1);
+  var user_token = getValueFromSheet(user_name, 1);
   var att = [{ "fallback": "スタンプを送信しました", "image_url": stamp_url }]
   
   // ユーザトークンの取得が成功した場合
-  if (usr_token != "") {
+  if (user_token != "") {
     // 投稿されたスタンプの削除
     app.chatDelete(channel_id, e.parameter.timestamp);
   
