@@ -1,10 +1,10 @@
-var token = "<SlackのAPI Token>";
+var team_token = "<SlackのAPI Token>";
 var sheet_url = "<Googleスプレッドシートの共有URL>";
-
+var app = SlackApp.create(team_token);
 
 // Outgoing WebHooksに反応する関数 
 function doPost(e) {
-  
+
   if( e.parameter.user_name == "slackbot" ) {
     return null;
   }  
@@ -27,13 +27,11 @@ function doPost(e) {
   var user_name = e.parameter.user_name;
   
   // ユーザ名からtokenの取得
-  var token = getValueFromSheet(user_name, 1);
+  var usr_token = getValueFromSheet(user_name, 1);
   var att = [{ "fallback": "スタンプを送信しました", "image_url": stamp_url }]
   
   // ユーザトークンの取得が成功した場合
-  if (token != "") {
-    var app = SlackApp.create(token);
-  
+  if (usr_token != "") {
     // 投稿されたスタンプの削除
     app.chatDelete(channel_id, e.parameter.timestamp);
   
@@ -44,9 +42,7 @@ function doPost(e) {
     });
   }
   else {
-    token = token_bak;
-    var icon_url = getUserIconURL(e.parameter.user_id, token);
-    var app = SlackApp.create(token);
+    var icon_url = getUserIconURL(e.parameter.user_id);
   
     // 投稿されたスタンプの削除
     app.chatDelete(channel_id, e.parameter.timestamp);
@@ -71,9 +67,8 @@ function isStamp(text){
 }
 
 // UserIDからそのユーザアイコンのURLを取得する関数
-function getUserIconURL(user_id, token){
+function getUserIconURL(user_id){
   
-  var app = SlackApp.create(token);
   var user_info = app.usersInfo(user_id);
   
   return user_info.user.profile.image_72;
@@ -119,3 +114,4 @@ function addDateString(original){
     return original + "?" + date.getTime();
   }
 }
+
