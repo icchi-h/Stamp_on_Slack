@@ -30,34 +30,35 @@ function doPost(e) {
   var token = getValueFromSheet(user_name, 1);
   var att = [{ "fallback": "スタンプを送信しました", "image_url": stamp_url }]
   
+  var param;
   // ユーザトークンの取得が成功した場合
   if (token != "") {
-    var app = SlackApp.create(token);
-  
-    // 投稿されたスタンプの削除
-    app.chatDelete(channel_id, e.parameter.timestamp);
-  
-    // 対応するスタンプURLを投稿
-    var post_info = app.postMessage(channel_id, "", {
+    param = {
       attachments : JSON.stringify(att),
       as_user: true,
-    });
+    };
   }
   else {
     token = token_bak;
     var icon_url = getUserIconURL(e.parameter.user_id, token);
-    var app = SlackApp.create(token);
-  
-    // 投稿されたスタンプの削除
-    app.chatDelete(channel_id, e.parameter.timestamp);
-  
-    // 対応するスタンプURLを投稿
-    var post_info = app.postMessage(channel_id, "", {
+
+    param = {
       attachments : JSON.stringify(att),
       username: user_name,
       icon_url: icon_url,
-    });
+    };
   }
+  
+  var app = SlackApp.create(token);
+  // 投稿されたスタンプの削除
+  app.chatDelete(channel_id, e.parameter.timestamp);
+
+  // ThreadならThread宛てへ
+  if(e.parameter.thread_ts !== undefined){
+     param["thread_ts"] = e.parameter.thread_ts;
+  }
+  //送信
+  var post_info = app.postMessage(channel_id, "", param);
   
   return true;
 }
